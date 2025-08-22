@@ -19,7 +19,7 @@ def compute_certificate(
         penalty="chi2",
     ):
 
-    # update tracked quantities with maximum recency
+    # update tracked quantities with high recency
     losses, grads = primal_oracle(w, X, y)
     avg = 0.1
     q_new = (1 - avg) * q + avg * q_cert

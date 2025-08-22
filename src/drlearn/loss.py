@@ -1,3 +1,4 @@
+"""Functions for implementing objective function and gradient oracles."""
 import numpy as np
 import scipy
 

@@ -43,13 +43,15 @@ def spectral_risk_measure_maximization_oracle(spectrum, shift_cost, penalty, los
         raise NotImplementedError
     return dual_val, q
 
-def make_superquantile_spectrum(n, tail_prob):
+def make_superquantile_spectrum(n, head_prob):
+    if head_prob > 1 - 1e-12:
+        return np.ones(n, dtype=np.float64) / n
     spectrum = np.zeros(n, dtype=np.float64)
-    idx = math.floor(n * tail_prob)
-    frac = 1 - (n - idx - 1) / (n * (1 - tail_prob))
+    idx = math.floor(n * head_prob)
+    frac = 1 - (n - idx - 1) / (n * (1 - head_prob))
     if frac > 1e-12:
         spectrum[idx] = frac
-        spectrum[(idx + 1) :] = 1 / (n * (1 - tail_prob))
+        spectrum[(idx + 1) :] = 1 / (n * (1 - head_prob))
     else:
         spectrum[idx:] = 1 / (n - idx)
     return spectrum
@@ -62,6 +64,8 @@ def make_extremile_spectrum(n, n_draws):
 
 
 def make_esrm_spectrum(n, risk_aversion):
+    if risk_aversion <= 1e-12:
+        return np.ones(n, dtype=np.float64) / n
     upper = np.exp(risk_aversion * ((np.arange(n, dtype=np.float64) + 1) / n))
     lower = np.exp(risk_aversion * (np.arange(n, dtype=np.float64) / n))
     return math.exp(-risk_aversion) * (upper - lower) / (1 - math.exp(-risk_aversion))

@@ -59,4 +59,4 @@ docs = [
 
 [tool.setuptools.packages.find]
 include = ["README.md", "LICENSE"]
-exclude = ["*_test.py"]
+exclude = ["test_*.py"]
