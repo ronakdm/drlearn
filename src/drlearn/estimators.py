@@ -2,7 +2,6 @@
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin, ClassifierMixin
 from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
-from sklearn.utils.multiclass import unique_labels
 from scipy.special import expit, softmax
 
 from .optim import minimize_prospect, minimize_lsvrg
@@ -51,15 +50,17 @@ def get_scores(estimator, X):
     
     # Input validation
     X = check_array(X)
-    n = len(X)
-    if estimator.fit_intercept:
-        X = np.concatenate([np.ones(shape=(n, 1)), X], axis=1)
+    # n = len(X)
+    # if estimator.fit_intercept:
+    #     X = np.concatenate([np.ones(shape=(n, 1)), X], axis=1)
 
     if estimator.loss in ["squared_error", "binary_cross_entropy"]:
-        return X @ estimator.coef
-    elif estimator.loss == ["multinomial_cross_entropy"]:
+        return X @ estimator.coef_ + estimator.intercept_
+    elif estimator.loss == "multinomial_cross_entropy":
         n_class = len(estimator.classes_)
-        return X @ estimator.coef.reshape((-1, n_class))
+        return X @ estimator.coef_.reshape((-1, n_class)) + estimator.intercept_
+    else:
+        raise ValueError(f"unrecognized loss '{estimator.loss}'! options: 'squared_error', 'binary_cross_entropy', 'multinomial_cross_entropy'")
 
 class Ridge(BaseEstimator, RegressorMixin):
     def __init__(
@@ -81,7 +82,7 @@ class Ridge(BaseEstimator, RegressorMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
-        self.coef = fit(
+        coef = fit(
             X, y, 
             self.optim, 
             self.loss, 
@@ -91,6 +92,12 @@ class Ridge(BaseEstimator, RegressorMixin):
             self.penalty,
             self.shift_cost
         )
+        if self.fit_intercept:
+            self.intercept_ = coef[0]
+            self.coef_ = coef[1:]
+        else:
+            self.intercept_ = 0.0
+            self.coef_ = coef
         self.is_fitted = True
         return self
         
@@ -122,7 +129,8 @@ class BinaryLogisticRegression(BaseEstimator, ClassifierMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
-        self.coef = fit(
+        assert np.isin(y, np.array([0, 1])).all(), "y should be binary labels {0, 1}"
+        coef = fit(
             X, y, 
             self.optim, 
             self.loss, 
@@ -132,6 +140,12 @@ class BinaryLogisticRegression(BaseEstimator, ClassifierMixin):
             self.penalty,
             self.shift_cost
         )
+        if self.fit_intercept:
+            self.intercept_ = coef[0]
+            self.coef_ = coef[1:]
+        else:
+            self.intercept_ = 0.0
+            self.coef_ = coef
         self.is_fitted = True
         return self
         
@@ -167,7 +181,8 @@ class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
-        self.coef = fit(
+        self.classes_, y = np.unique(y, return_inverse=True)
+        coef = fit(
             X, y, 
             self.optim, 
             self.loss, 
@@ -177,8 +192,13 @@ class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
             self.penalty,
             self.shift_cost
         )
+        if self.fit_intercept:
+            self.intercept_ = coef[0]
+            self.coef_ = coef[1:]
+        else:
+            self.intercept_ = 0.0
+            self.coef_ = coef
         self.is_fitted = True
-        self.classes_ = unique_labels(y)
         return self
         
     def __sklearn_is_fitted__(self):

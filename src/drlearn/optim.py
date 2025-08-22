@@ -94,7 +94,6 @@ def minimize_lsvrg(
                     primal_oracle_evals,
                     X_test=X_test,
                     y_test=y_test,
-                    n_class=n_class,
                 )
             )
             if iter == 0:
@@ -244,7 +243,6 @@ def minimize_prospect(
                     primal_oracle_evals,
                     X_test=X_test,
                     y_test=y_test,
-                    n_class=n_class,
                 )
             )
             if iter == 0:
