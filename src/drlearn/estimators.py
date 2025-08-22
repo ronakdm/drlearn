@@ -5,8 +5,8 @@ from sklearn.utils.validation import check_X_y, check_array, check_is_fitted
 from sklearn.utils.multiclass import unique_labels
 from scipy.special import expit, softmax
 
-from src.drlearn.optim import minimize_prospect, minimize_lsvrg
-from src.drlearn.spectral_risk import make_superquantile_spectrum, make_spectral_risk_measure_oracle
+from .optim import minimize_prospect, minimize_lsvrg
+from .spectral_risk import make_superquantile_spectrum, make_spectral_risk_measure_oracle
 
 def fit(X, y, optim, loss, dual_max_oracle, weight_decay, fit_intercept, penalty, shift_cost):
 

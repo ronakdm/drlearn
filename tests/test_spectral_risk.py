@@ -4,10 +4,15 @@ from absl.testing import absltest, parameterized
 
 import numpy as np
 
-import sys
-sys.path.extend(["."])
-from src import make_esrm_spectrum, make_extremile_spectrum, make_superquantile_spectrum
-from src.drlearn.spectral_risk import make_spectral_risk_measure_oracle
+# Public API
+from drlearn import (
+    make_esrm_spectrum,
+    make_extremile_spectrum,
+    make_superquantile_spectrum,
+)
+
+# Internal API
+from drlearn.spectral_risk import make_spectral_risk_measure_oracle
 
 class TestSpectralRisk(parameterized.TestCase):
 
@@ -44,7 +49,7 @@ class TestSpectralRisk(parameterized.TestCase):
         self.assertAlmostEqual(weights.sum().item(), 1., places=6)
 
     @parameterized.product(params=[
-        (make_superquantile_spectrum, 0.5, 0.75),
+        (make_superquantile_spectrum, 0.25, 0.75),
         (make_extremile_spectrum, 1.5, 2.0),
         (make_esrm_spectrum, 1.0, 2.0),
     ], penalty=["chi2", "kl"])
@@ -58,9 +63,9 @@ class TestSpectralRisk(parameterized.TestCase):
         spectrum1 = test_func(batch_size, param1)
         spectrum2 = test_func(batch_size, param2)
 
-        max_oracle1 = make_spectral_risk_measure_oracle(spectrum1, penalty, 1.0)
-        max_oracle2 = make_spectral_risk_measure_oracle(spectrum2, penalty, 1.0)
-        max_oracle3 = make_spectral_risk_measure_oracle(spectrum1, penalty, 2.0)
+        max_oracle1 = make_spectral_risk_measure_oracle(spectrum1, penalty, 0.1)
+        max_oracle2 = make_spectral_risk_measure_oracle(spectrum2, penalty, 0.1)
+        max_oracle3 = make_spectral_risk_measure_oracle(spectrum1, penalty, 0.2)
 
         val1, weights1 = max_oracle1(losses)
         val2, weights2 = max_oracle2(losses)

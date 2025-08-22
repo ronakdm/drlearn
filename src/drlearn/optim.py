@@ -4,8 +4,8 @@ import numba
 from functools import partial
 import time
 
-from src.drlearn.utils import evaluate, to_dict_of_lists, select_learning_rate, compute_regularizer_grad, compute_certificate
-from src.drlearn.loss import get_primal_first_order_oracle
+from .utils import evaluate, to_dict_of_lists, select_learning_rate, compute_regularizer_grad, compute_certificate
+from .loss import get_primal_first_order_oracle
 
 import warnings
 from sklearn.exceptions import ConvergenceWarning

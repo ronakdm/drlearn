@@ -33,6 +33,7 @@ dependencies = [
   "absl-py>=0.7.1",
   "numba>=0.58.1",
   "numpy>=1.21",
+  "scipy>=1.14.1",
   "scikit-learn>=1.6.0",
 ]
 
@@ -42,7 +43,6 @@ examples=[
   "jupyterlab>=4.1",
   "matplotlib>=3.5.0",
 ]
-
 docs = [
     "sphinx>=6.0.0",
     "sphinx_book_theme>=1.0.1",
@@ -55,6 +55,10 @@ docs = [
     "sphinx-collections>=0.0.1",
     "sphinx_contributors",
     "seaborn"
+]
+test = [
+    "absl-py",
+    "pytest",
 ]
 
 [tool.setuptools.packages.find]
