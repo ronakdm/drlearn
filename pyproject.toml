@@ -44,17 +44,17 @@ examples=[
   "matplotlib>=3.5.0",
 ]
 docs = [
-    "sphinx>=6.0.0",
-    "sphinx_book_theme>=1.0.1",
-    "sphinxcontrib-katex",
-    "sphinx-autodoc-typehints",
-    "ipython>=8.8.0",  # 8.7.0 has ipython3 lexer error
-    "myst-nb>=1.0.0",
-    "matplotlib>=3.5.0",
-    "sphinx-gallery>=0.14.0",
-    "sphinx-collections>=0.0.1",
-    "sphinx_contributors",
-    "seaborn"
+  "sphinx>=7.2,<8.0",
+  "nbsphinx",                
+  "furo",
+  "sphinx-autodoc-typehints",
+  "sphinxcontrib-katex",
+  "sphinx-gallery",
+  "sphinx-collections",
+  "sphinx_contributors",
+  "ipython>=8.8",
+  "matplotlib>=3.5",
+  "seaborn"
 ]
 test = [
     "absl-py",

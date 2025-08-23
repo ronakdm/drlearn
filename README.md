@@ -1,6 +1,6 @@
 # drlearn
 
-`drlearn`is a library for incorporating distributionally robust optimization seamlessly into estimators that use the `scikit-learn` interface.
+`drlearn`is a library for incorporating distributionally robust optimization seamlessly into estimators that use the `scikit-learn` interface. The focus is on spectral risk measure-based learning which is described in detail in this [AISTATS 2023 paper](https://proceedings.mlr.press/v206/mehta23b.html) and this [ICLR 2024 paper](https://openreview.net/forum?id=TTrzgEZt9s) (Spotlight Presentation). Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. This package parallels a similar one, called [Deshift](https://ronakdm.github.io/deshift/), which is built for machine learning workflows based on `torch` (as opposed to `scikit-learn`).
 
 ## Installation
 
@@ -9,15 +9,34 @@ root folder:
 ```
 pip install -e .
 ```
-Additional dependencies to run the example in `examples/*.ipynb` can be installed using `pip install -e .[examples]`. To build the docs, additional dependencies can be run using `pip install -e .[docs]`.
+To build the docs, additional dependencies can be run using `pip install -e .[docs]`.
 
 ## Quickstart
 
+First, we construct a distributionally robust objective that inputs a vector of losses and returns a weighted average of its entries that upweighs its larger values. That is, for $l \in \mathbb{R}^n$, the mapping
 
+$$
+    l \mapsto \operatorname{max}_{q \in \mathcal{Q}(\sigma)} \langle q, l \rangle - \nu \operatorname{Pen}(q),
+$$
+
+where $\mathcal{Q}(\sigma)$ is the convex hull of all permutations of probability weights $\sigma = (\sigma_1, \ldots, \sigma_n)$ (called the *spectrum*), $\nu \geq 0$ is the *shift cost*, and $\operatorname{Pen}(\cdot)$ is the *penalty*. All of these have default values, and if the user wishes to change them, the primary decision to make is choosing the spectrum $\sigma$. This is parameterized by a univariate quantity, which may be selected as a hyperparameter:
+```
+from drlearn import make_extremile_spectrum, Ridge
+
+n = 100
+X = np.random.normal(size=(n, 10))
+y = np.random.normal(size=(n,))
+
+
+spectrum = make_extremile_spectrum(n, 2.0)
+weight_decay = 0.01 # l2 regularization parameter
+model = Ridge(spectrum=spectrum, weight_decay=weight_decay).fit(X, y)
+```
+The variable `model` is now an estimator that has a `predict` method. The `BinaryLogisticRegression` and `MultinomialLogisticRegression` estimators also have `predict_proba` methods. Please refer to `docs/quickstart.ipynb` for a more detailed example.
 
 ## Documentation
 
-The documentation is available [here](https://ronakdm.github.io/deshift/).
+The documentation is available [here](https://ronakdm.github.io/drlearn/).
 
 ## Contributing
 

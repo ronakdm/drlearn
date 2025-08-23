@@ -44,6 +44,14 @@ def spectral_risk_measure_maximization_oracle(spectrum, shift_cost, penalty, los
     return dual_val, q
 
 def make_superquantile_spectrum(n, head_prob):
+    """Construct a superquantile spectrum.
+
+    Args:
+        head_prob (float): Head probability between 0 and 1, or the proportion of data that is ignored in the superquantile.
+
+    Returns:
+        np.ndarray: The spectrum weights.
+    """
     assert head_prob >= 0.0 and head_prob <= 1.0
     if head_prob > 1 - 1e-12:
         return np.ones(n, dtype=np.float64) / n
@@ -58,6 +66,14 @@ def make_superquantile_spectrum(n, head_prob):
     return spectrum
 
 def make_extremile_spectrum(n, n_draws):
+    """Construct an extremile spectrum. The extremile weights represent the average maximum of `n_draws` i.i.d. samples.
+
+    Args:
+        n_draws (float): Number of draws, must be at least 1.0 and can be fractional.
+
+    Returns:
+        np.ndarray: The spectrum weights.
+    """
     assert n_draws >= 1.0
     return (
         (np.arange(n, dtype=np.float64) + 1) ** n_draws
@@ -66,6 +82,14 @@ def make_extremile_spectrum(n, n_draws):
 
 
 def make_esrm_spectrum(n, risk_aversion):
+    """Construct exponential spectral risk measure spectrum.
+
+    Args:
+        risk_aversion (float): Risk aversion parameter, must be non-negative.
+
+    Returns:
+        np.ndarray: The spectrum weights.
+    """
     assert risk_aversion >= 0.0
     if risk_aversion <= 1e-12:
         return np.ones(n, dtype=np.float64) / n

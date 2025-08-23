@@ -50,9 +50,6 @@ def get_scores(estimator, X):
     
     # Input validation
     X = check_array(X)
-    # n = len(X)
-    # if estimator.fit_intercept:
-    #     X = np.concatenate([np.ones(shape=(n, 1)), X], axis=1)
 
     if estimator.loss in ["squared_error", "binary_cross_entropy"]:
         return X @ estimator.coef_ + estimator.intercept_
@@ -63,6 +60,31 @@ def get_scores(estimator, X):
         raise ValueError(f"unrecognized loss '{estimator.loss}'! options: 'squared_error', 'binary_cross_entropy', 'multinomial_cross_entropy'")
 
 class Ridge(BaseEstimator, RegressorMixin):
+    """
+    Linear distributionally robust least squares with L2 regularization.
+
+    Parameters
+    ----------
+    spectrum : np.ndarray or NoneType, default=None
+        Spectrum weights for the spectral risk measure. If None, defaults to superquantile spectrum with head_prob=0.5.
+    penalty : str, default="chi2"
+        Penalty type for the dual maximization oracle. Options are "chi2" or "kl".
+    shift_cost : float, default=0.05
+        Shift cost for the dual maximization oracle. Must be non-negative.
+    weight_decay : float, default=1.0
+        Regularization strength. Must be non-negative.
+    fit_intercept : bool, default=True
+        Whether to fit the intercept term.
+    optim : string, default="prospect"
+        Optimization algorithm to use. Options are "prospect" or "lsvrg".
+
+    Attributes
+    ----------
+    coef_ : ndarray of shape (n_features,)
+        Estimated coefficients.
+    intercept_ : float
+        Intercept term.
+    """
     def __init__(
             self, 
             spectrum=None, 
@@ -82,6 +104,21 @@ class Ridge(BaseEstimator, RegressorMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
+        """
+        Fit the model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+        y : array-like of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : Ridge
+            Fitted estimator.
+        """
         coef = fit(
             X, y, 
             self.optim, 
@@ -105,11 +142,48 @@ class Ridge(BaseEstimator, RegressorMixin):
         return self.is_fitted
 
     def predict(self, X):
+        """
+        Predict using the fitted model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values.
+        """
         return get_scores(self, X)
 
 
 class BinaryLogisticRegression(BaseEstimator, ClassifierMixin):
+    """
+    Linear distributionally robust binary logistic regression with L2 regularization.
 
+    Parameters
+    ----------
+    spectrum : np.ndarray or NoneType, default=None
+        Spectrum weights for the spectral risk measure. If None, defaults to superquantile spectrum with head_prob=0.5.
+    penalty : str, default="chi2"
+        Penalty type for the dual maximization oracle. Options are "chi2" or "kl".
+    shift_cost : float, default=0.05
+        Shift cost for the dual maximization oracle. Must be non-negative.
+    weight_decay : float, default=1.0
+        Regularization strength. Must be non-negative.
+    fit_intercept : bool, default=True
+        Whether to fit the intercept term.
+    optim : string, default="prospect"
+        Optimization algorithm to use. Options are "prospect" or "lsvrg".
+
+    Attributes
+    ----------
+    coef_ : ndarray of shape (n_features,)
+        Estimated coefficients.
+    intercept_ : float
+        Intercept term.
+    """
     def __init__(
             self, 
             spectrum=None, 
@@ -129,6 +203,21 @@ class BinaryLogisticRegression(BaseEstimator, ClassifierMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
+        """
+        Fit the model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+        y : array-like of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : BinaryLogisticRegression
+            Fitted estimator.
+        """
         assert np.isin(y, np.array([0, 1])).all(), "y should be binary labels {0, 1}"
         coef = fit(
             X, y, 
@@ -153,15 +242,65 @@ class BinaryLogisticRegression(BaseEstimator, ClassifierMixin):
         return self.is_fitted
 
     def predict(self, X):
+        """
+        Predict using the fitted model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values (either 0 or 1).
+        """
         scores = get_scores(self, X)
         return (scores >= 0.).astype(int)
 
     def predict_proba(self, X):
+        """
+        Class probabilities for logistic models.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        proba : ndarray of shape (n_samples, )
+            Probabilities for class 1.
+        """
         scores = get_scores(self, X)
         return expit(scores)
 
 class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
+    """
+    Linear distributionally robust multinomial logistic regression with L2 regularization.
 
+    Parameters
+    ----------
+    spectrum : np.ndarray or NoneType, default=None
+        Spectrum weights for the spectral risk measure. If None, defaults to superquantile spectrum with head_prob=0.5.
+    penalty : str, default="chi2"
+        Penalty type for the dual maximization oracle. Options are "chi2" or "kl".
+    shift_cost : float, default=0.05
+        Shift cost for the dual maximization oracle. Must be non-negative.
+    weight_decay : float, default=1.0
+        Regularization strength. Must be non-negative.
+    fit_intercept : bool, default=True
+        Whether to fit the intercept term.
+    optim : string, default="prospect"
+        Optimization algorithm to use. Options are "prospect" or "lsvrg".
+
+    Attributes
+    ----------
+    coef_ : ndarray of shape (n_features,)
+        Estimated coefficients.
+    intercept_ : float
+        Intercept term.
+    """
     def __init__(
             self, 
             spectrum=None, 
@@ -181,6 +320,21 @@ class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
         self.shift_cost = shift_cost
 
     def fit(self, X, y):
+        """
+        Fit the model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Training data.
+        y : array-like of shape (n_samples,)
+            Target values.
+
+        Returns
+        -------
+        self : MultinomialLogisticRegression
+            Fitted estimator.
+        """
         self.classes_, y = np.unique(y, return_inverse=True)
         coef = fit(
             X, y, 
@@ -205,9 +359,35 @@ class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
         return self.is_fitted
 
     def predict(self, X):
+        """
+        Predict using the fitted model.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        y_pred : ndarray of shape (n_samples,)
+            Predicted values (written as the class indices provided during training).
+        """
         scores = get_scores(self, X)
         return self.classes_[np.argmax(scores, axis=1)]
 
     def predict_proba(self, X):
+        """
+        Class probabilities for logistic models.
+
+        Parameters
+        ----------
+        X : array-like of shape (n_samples, n_features)
+            Samples.
+
+        Returns
+        -------
+        proba : ndarray of shape (n_samples, n_classes)
+            Class probabilities. For binary problems this has shape (n_samples, 2).
+        """
         scores = get_scores(self, X)
         return softmax(scores, axis=1)

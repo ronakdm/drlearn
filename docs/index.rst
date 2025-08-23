@@ -3,20 +3,13 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-`drlearn`
+DRLearn
 ==============
 
-This library is built to perform distributionally robust optimization (DRO) within existing scikit-learn workflows (using `sklearn.linear_model`, say) with minimal changes to your code.
-The focus is on spectral risk measure-based learning which is described in detail in `this AISTATS 2023 paper <https://proceedings.mlr.press/v206/mehta23b.html>`_
-and `this ICLR 2024 paper <https://arxiv.org/abs/2310.13863>`_ (Spotlight Presentation). Distributionally robust objectives apply a sample reweighting to the 
-observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. The main features are:
-
-* Implementations of the superquantile/conditional value-at-risk (CVaR), extremile, and exponential spectral risk measures.
-* Implementations of the pool adjacent violators (PAV) algorithm for computing regularized spectral risk measures with Kullback-Leibler and Chi-Squared divergences.
-
-One can use default parameters and simply apply `Ridge` and `LogisticRegression` modules as you are used to, or have fine-grained control over optimization aspects.
-
-The following is a guide to the main features of the package.
+`drlearn`is a library for incorporating distributionally robust optimization seamlessly into estimators that use the `scikit-learn` interface. 
+The focus is on spectral risk measure-based learning which is described in detail in this `this AISTATS 2023 paper <https://proceedings.mlr.press/v206/mehta23b.html>`_ and this `this ICLR 2024 paper <https://arxiv.org/abs/2310.13863>`_ (Spotlight Presentation). 
+Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. 
+This package parallels a similar one, called `Deshift <https://ronakdm.github.io/deshift/>`_, which is built for machine learning workflows based on `torch` (as opposed to `scikit-learn`).
 
 .. toctree::
   :maxdepth: 2
@@ -33,34 +26,29 @@ You can install `drlearn` by running
 
 .. code-block:: bash
 
-    $ git clone git@github.com:ronakdm/drlear.git
+    $ git clone git@github.com:ronakdm/drlearn.git
     $ cd drlearn
     $ pip install -e .
+
+To build the docs, additional dependencies can be run using `pip install -e .[docs]`.
 
 Quickstart
 ------------------
 
-First, we construct a function that inputs a vector of losses and returns a probability distribution over elements in this loss vector.
-
+First, we construct a distributionally robust objective that inputs a vector of losses and returns a weighted average of its entries that upweighs its larger values. 
 .. code-block:: python
 
-  >>> from deshift import make_spectral_risk_measure, make_superquantile_spectrum
-  >>> spectrum = make_superquantile_spectrum(batch_size, 2.0)
-  >>> compute_sample_weight = make_spectral_risk_measure(spectrum, penalty="chi2", shift_cost=1.0)
+  >>> from drlearn import make_extremile_spectrum, Ridge
+  >>> n = 100
+  >>> X = np.random.normal(size=(n, 10))
+  >>> y = np.random.normal(size=(n,))
+  >>> 
+  >>> spectrum = make_extremile_spectrum(n, 2.0)
+  >>> weight_decay = 0.01 # l2 regularization parameter
+  >>> model = Ridge(spectrum=spectrum, weight_decay=weight_decay).fit(X, y)
 
-Assume that we have computed a vector of losses based on a model output in PyTorch. We can then use the function above and back propagate through the weighted sum of losses.
-
-.. code-block:: python
-
-  >>> x, y = get_batch()
-  >>> logits = model(x)
-  >>> losses = torch.nn.functional.cross_entropy(logits, y, reduction="none")
-  >>> with torch.no_grad():
-  >>>     weights = compute_sample_weight(losses.cpu().numpy()).to(device)
-  >>> loss = weights @ losses
-  >>> loss.backward()
-
-A detailed quickstart guide is given in `docs/source/quicstart.ipynb`, whereas an example training on Fashion MNIST is given in `examples/train_fashion_mnist.ipynb`.
+The variable `model` is now an estimator that has a `predict` method. The `BinaryLogisticRegression` and `MultinomialLogisticRegression` estimators also have `predict_proba` methods. 
+Please refer to `docs/quickstart.ipynb` for a more detailed example.
 
 
 Contributing
@@ -83,7 +71,6 @@ Cite
 If you find this package useful, or you use it in your research, please cite:
 
 .. code-block::
-
    @inproceedings{mehta2023stochastic,
       title={{Stochastic Optimization for Spectral Risk Measures}},
       author={Mehta, Ronak and Roulet, Vincent and Pillutla, Krishna and Liu, Lang and Harchaoui, Zaid},
