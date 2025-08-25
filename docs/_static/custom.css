@@ -8,3 +8,7 @@
   padding: 6px 8px;   /* optional breathing room */
   border-radius: 8px; /* optional to match Furo’s rounded corners */
 }
+
+.custom-font-size {
+    font-size: 28px; 
+}

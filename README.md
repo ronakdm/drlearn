@@ -1,6 +1,8 @@
 # drlearn
 
-`drlearn`is a library for incorporating distributionally robust optimization seamlessly into estimators that use the `scikit-learn` interface. The focus is on spectral risk measure-based learning which is described in detail in this [AISTATS 2023 paper](https://proceedings.mlr.press/v206/mehta23b.html) and this [ICLR 2024 paper](https://openreview.net/forum?id=TTrzgEZt9s) (Spotlight Presentation). Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. This package parallels a similar one, called [Deshift](https://ronakdm.github.io/deshift/), which is built for machine learning workflows based on `torch` (as opposed to `scikit-learn`).
+`drlearn`is a library for incorporating distributionally robust optimization seamlessly into estimators that use the `scikit-learn` interface. It implements the spectral risk measure-based learning techniques from this [AISTATS 2023 paper](https://proceedings.mlr.press/v206/mehta23b.html) and this [ICLR 2024 paper](https://openreview.net/forum?id=TTrzgEZt9s) (Spotlight Presentation). Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. This package parallels a similar one, built for machine learning workflows based on `torch` (as opposed to `scikit-learn`), called:
+
+<span style="font-size: 20px;">**[Deshift](https://ronakdm.github.io/deshift/)**</span>
 
 ## Installation
 
@@ -32,11 +34,13 @@ spectrum = make_extremile_spectrum(n, 2.0)
 weight_decay = 0.01 # l2 regularization parameter
 model = Ridge(spectrum=spectrum, weight_decay=weight_decay).fit(X, y)
 ```
-The variable `model` is now an estimator that has a `predict` method. The `BinaryLogisticRegression` and `MultinomialLogisticRegression` estimators also have `predict_proba` methods. Please refer to `docs/quickstart.ipynb` for a more detailed example.
+The variable `model` is now an estimator that has a `predict` method. The `BinaryLogisticRegression` and `MultinomialLogisticRegression` estimators also have `predict_proba` methods. Please refer to `docs/quickstart.ipynb` for a more detailed example, whereas `docs/spectra.ipynb` provides conceptual and practical guidance on selecting the spectrum/risk parameters.
 
 ## Documentation
 
-The documentation is available [here](https://ronakdm.github.io/drlearn/).
+Please see the link to the full documentation site below:
+
+<span style="font-size: 20px;">**[DRLearn Documentation](https://ronakdm.github.io/drlearn/)**</span>
 
 ## Contributing
 
