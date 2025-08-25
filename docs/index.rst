@@ -17,6 +17,7 @@ This package parallels a similar one, called `Deshift <https://ronakdm.github.io
   :hidden:
 
   quickstart
+  spectra
   api
 
 Installation

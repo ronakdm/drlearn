@@ -51,13 +51,14 @@ def get_scores(estimator, X):
     # Input validation
     X = check_array(X)
 
-    if estimator.loss in ["squared_error", "binary_cross_entropy"]:
-        return X @ estimator.coef_ + estimator.intercept_
-    elif estimator.loss == "multinomial_cross_entropy":
-        n_class = len(estimator.classes_)
-        return X @ estimator.coef_.reshape((-1, n_class)) + estimator.intercept_
-    else:
-        raise ValueError(f"unrecognized loss '{estimator.loss}'! options: 'squared_error', 'binary_cross_entropy', 'multinomial_cross_entropy'")
+    # if estimator.loss in ["squared_error", "binary_cross_entropy"]:
+    #     return X @ estimator.coef_ + estimator.intercept_
+    # elif estimator.loss == "multinomial_cross_entropy":
+    #     n_class = len(estimator.classes_)
+    #     return X @ estimator.coef_.reshape((-1, n_class)) + estimator.intercept_
+    # else:
+    #     raise ValueError(f"unrecognized loss '{estimator.loss}'! options: 'squared_error', 'binary_cross_entropy', 'multinomial_cross_entropy'")
+    return X @ estimator.coef_ + estimator.intercept_
 
 class Ridge(BaseEstimator, RegressorMixin):
     """
@@ -345,7 +346,7 @@ class MultinomialLogisticRegression(BaseEstimator, ClassifierMixin):
             self.fit_intercept,
             self.penalty,
             self.shift_cost
-        )
+        ).reshape((-1, len(self.classes_)))
         if self.fit_intercept:
             self.intercept_ = coef[0]
             self.coef_ = coef[1:]

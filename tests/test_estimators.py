@@ -158,7 +158,7 @@ class TestEstimator(parameterized.TestCase):
             weight_decay=weight_decay
         )
         model1.fit(X, y)
-        self.assertEqual(model1.coef_.shape, (10 * n_classes,))
+        self.assertEqual(model1.coef_.shape, (10, n_classes))
         losses1 = multinomial_cross_entropy_first_order_oracle(n_classes, model1.coef_, X, y)[0]
 
         model2 = MultinomialLogisticRegression(
