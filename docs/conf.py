@@ -68,12 +68,12 @@ suppress_warnings = ["autodoc"]
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
+html_css_files = ["custom.css"]
 html_theme_options = {
     # optional tweaks
     "sidebar_hide_name": True,
-    # "light_logo": "logo.png",  
-    # "dark_logo": "logo-dark.png",
-    "sidebar_hide_name": False,
+    "light_logo": "drlearn.png",
+    "dark_logo": "drlearn.png",
 }
 html_static_path = ['_static']
 
