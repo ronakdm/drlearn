@@ -13,7 +13,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=25af2a20" />
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=fd3f3429" />
     <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=8dab3a3b" />
-    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=e7636a87" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css?v=13b3b0a3" />
     
     
 
@@ -260,9 +260,10 @@
           <section id="drlearn">
 <h1>DRLearn<a class="headerlink" href="#drlearn" title="Link to this heading">¶</a></h1>
 <p>DRLearn is a library for incorporating distributionally robust optimization seamlessly into estimators that use the <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> interface.
-The focus is on spectral risk measure-based learning which is described in detail in this <a class="reference external" href="https://proceedings.mlr.press/v206/mehta23b.html">this AISTATS 2023 paper</a> and this <a class="reference external" href="https://arxiv.org/abs/2310.13863">this ICLR 2024 paper</a> (Spotlight Presentation).
-Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time.
-This package parallels a similar one, called <a class="reference external" href="https://ronakdm.github.io/deshift/">Deshift</a>, which is built for machine learning workflows based on <code class="docutils literal notranslate"><span class="pre">torch</span></code> (as opposed to <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>).</p>
+It implements the spectral risk measure-based learning techniques from this <a class="reference external" href="https://proceedings.mlr.press/v206/mehta23b.html">this AISTATS 2023 paper</a> and this <a class="reference external" href="https://arxiv.org/abs/2310.13863">this ICLR 2024 paper</a> (Spotlight Presentation).
+Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time.</p>
+<p>This package parallels a similar one, which is built for machine learning workflows based on <code class="docutils literal notranslate"><span class="pre">torch</span></code> (as opposed to <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code>), called:</p>
+<p class="custom-font-size"><a class="reference external" href="https://ronakdm.github.io/deshift/">Deshift</a></p>
 <div class="toctree-wrapper compound">
 </div>
 <section id="installation">

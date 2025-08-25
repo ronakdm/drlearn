@@ -7,9 +7,16 @@ DRLearn
 ==============
 
 DRLearn is a library for incorporating distributionally robust optimization seamlessly into estimators that use the ``scikit-learn`` interface. 
-The focus is on spectral risk measure-based learning which is described in detail in this `this AISTATS 2023 paper <https://proceedings.mlr.press/v206/mehta23b.html>`_ and this `this ICLR 2024 paper <https://arxiv.org/abs/2310.13863>`_ (Spotlight Presentation). 
+It implements the spectral risk measure-based learning techniques from this `this AISTATS 2023 paper <https://proceedings.mlr.press/v206/mehta23b.html>`_ and this `this ICLR 2024 paper <https://arxiv.org/abs/2310.13863>`_ (Spotlight Presentation). 
 Distributionally robust objectives apply a sample reweighting to the observed training data within each mini-batch in order to robustify models against distribution shifts that occur at test time. 
-This package parallels a similar one, called `Deshift <https://ronakdm.github.io/deshift/>`_, which is built for machine learning workflows based on ``torch`` (as opposed to ``scikit-learn``).
+
+This package parallels a similar one, which is built for machine learning workflows based on ``torch`` (as opposed to ``scikit-learn``), called:
+
+.. rst-class:: custom-font-size
+
+`Deshift <https://ronakdm.github.io/deshift/>`_
+
+
 
 .. toctree::
   :maxdepth: 2
