@@ -16,10 +16,10 @@ To build the docs, additional dependencies can be run using `pip install -e .[do
 First, we construct a distributionally robust objective that inputs a vector of losses and returns a weighted average of its entries that upweighs its larger values. That is, for $l \in \mathbb{R}^n$, the mapping
 
 $$
-    l \mapsto \operatorname{max}_{q \in \mathcal{Q}(\sigma)} \langle q, l \rangle - \nu \operatorname{Pen}(q),
+    l \mapsto \text{max}_{q \in \mathcal{Q}(\sigma)} \langle q, l \rangle - \nu \text{Pen}(q),
 $$
 
-where $\mathcal{Q}(\sigma)$ is the convex hull of all permutations of probability weights $\sigma = (\sigma_1, \ldots, \sigma_n)$ (called the *spectrum*), $\nu \geq 0$ is the *shift cost*, and $\operatorname{Pen}(\cdot)$ is the *penalty*. All of these have default values, and if the user wishes to change them, the primary decision to make is choosing the spectrum $\sigma$. This is parameterized by a univariate quantity, which may be selected as a hyperparameter:
+where $\mathcal{Q}(\sigma)$ is the convex hull of all permutations of probability weights $\sigma = (\sigma_1, \ldots, \sigma_n)$ (called the *spectrum*), $\nu \geq 0$ is the *shift cost*, and $\text{Pen}(\cdot)$ is the *penalty*. All of these have default values, and if the user wishes to change them, the primary decision to make is choosing the spectrum $\sigma$. This is parameterized by a univariate quantity, which may be selected as a hyperparameter:
 ```
 from drlearn import make_extremile_spectrum, Ridge
 
